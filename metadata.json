@@ -1,0 +1,7 @@
+{
+  "name": "ServiceFlow - Gestão de Demandas",
+  "description": "Sistema profissional de gestão de chamados para manutenção predial e serviços de campo, com controle de SLA, dashboards de produtividade e triagem de supervisão.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
