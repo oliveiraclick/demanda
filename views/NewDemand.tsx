@@ -67,16 +67,7 @@ const NewDemand: React.FC<NewDemandProps> = ({ onSubmit, userName, slaSettings }
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Urgência do Problema</label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 p-1.5 bg-slate-100 rounded-3xl">
                   {Object.values(Priority).map(p => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => setForm(f => ({ ...f, priority: p }))}
-                      className={`py-3.5 rounded-[20px] text-[10px] font-black transition-all border-2 ${
-                        form.priority === p 
-                        ? 'bg-white border-blue-500 text-slate-900 shadow-sm translate-y-[-2px]' 
-                        : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600'
-                      }`}
-                    >
+                    <button key={p} type="button" onClick={() => setForm(f => ({ ...f, priority: p }))} className={`py-3.5 rounded-[20px] text-[10px] font-black transition-all border-2 ${form.priority === p ? 'bg-white border-blue-500 text-slate-900 shadow-sm translate-y-[-2px]' : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600'}`}>
                       {p === Priority.EMERGENCY ? '🚨 ' : ''}{p}
                     </button>
                   ))}
@@ -85,59 +76,32 @@ const NewDemand: React.FC<NewDemandProps> = ({ onSubmit, userName, slaSettings }
 
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">O que aconteceu?</label>
-                <input
-                  required
-                  type="text"
-                  placeholder="Ex: Lâmpada do hall piscando"
-                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 outline-none transition-all placeholder:text-slate-300 font-medium"
-                  value={form.title}
-                  onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-                />
+                <input required type="text" placeholder="Ex: Luz da entrada queimada" className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 outline-none transition-all placeholder:text-slate-300 font-medium" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
               </div>
 
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Categoria</label>
-                <select
-                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 outline-none font-medium appearance-none"
-                  value={form.category}
-                  onChange={e => setForm(f => ({ ...f, category: e.target.value as Category }))}
-                >
+                <select className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 outline-none font-medium appearance-none" value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value as Category }))}>
                   {Object.values(Category).map(cat => <option key={cat} value={cat}>{cat}</option>)}
                 </select>
               </div>
 
               <div className="space-y-2 md:col-span-2">
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Localização Exata</label>
-                <input
-                  required
-                  type="text"
-                  placeholder="Ex: Bloco B, 4º Andar, ao lado do elevador"
-                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 outline-none font-medium"
-                  value={form.location}
-                  onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
-                />
+                <input required type="text" placeholder="Ex: Bloco B, 4º Andar, ao lado do elevador" className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 outline-none font-medium" value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} />
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Descrição</label>
-              <textarea
-                required
-                rows={3}
-                placeholder="Conte-nos mais detalhes para ajudar no diagnóstico técnico..."
-                className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 outline-none font-medium"
-                value={form.description}
-                onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-              />
+              <textarea required rows={3} placeholder="Conte-nos mais detalhes para ajudar no diagnóstico técnico..." className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 outline-none font-medium" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
             </div>
 
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Evidência Visual (Obrigatório)</label>
               <div className="relative group">
                 <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-slate-200 rounded-[32px] cursor-pointer bg-slate-50/50 group-hover:bg-slate-50 transition-all overflow-hidden">
-                  {form.photo ? (
-                    <img src={form.photo} className="h-full w-full object-cover" alt="preview" />
-                  ) : (
+                  {form.photo ? <img src={form.photo} className="h-full w-full object-cover" alt="preview" /> : (
                     <div className="text-center p-6">
                       <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-4 text-2xl group-hover:scale-110 transition-transform">📸</div>
                       <p className="text-sm font-bold text-slate-700">Clique para capturar ou anexar</p>
@@ -146,15 +110,10 @@ const NewDemand: React.FC<NewDemandProps> = ({ onSubmit, userName, slaSettings }
                   )}
                   <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
                 </label>
-                {form.photo && (
-                  <button onClick={() => setForm(f => ({...f, photo: null}))} className="absolute top-4 right-4 bg-red-500 text-white w-10 h-10 rounded-full shadow-lg flex items-center justify-center font-bold">✕</button>
-                )}
+                {form.photo && <button onClick={() => setForm(f => ({...f, photo: null}))} className="absolute top-4 right-4 bg-red-500 text-white w-10 h-10 rounded-full shadow-lg flex items-center justify-center font-bold">✕</button>}
               </div>
             </div>
-
-            <button type="submit" className="w-full btn-primary text-white font-extrabold py-5 rounded-[24px] shadow-xl text-lg mt-4 active:scale-[0.98]">
-              Enviar Chamado
-            </button>
+            <button type="submit" className="w-full btn-primary text-white font-extrabold py-5 rounded-[24px] shadow-xl text-lg mt-4 active:scale-[0.98]">Enviar Chamado</button>
           </form>
         </div>
       </div>
