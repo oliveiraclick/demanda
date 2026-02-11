@@ -115,7 +115,6 @@ const AdminDashboards: React.FC<AdminDashboardsProps> = ({ tickets, users, slaSe
     alert('Solicitação de prazo rejeitada.');
   };
 
-  // Fix: Adding missing handleCreateUser function to manage new user form submission
   const handleCreateUser = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newUserForm.name) return;
@@ -164,7 +163,7 @@ const AdminDashboards: React.FC<AdminDashboardsProps> = ({ tickets, users, slaSe
             <div className="glass-card rounded-[32px] p-6 border-b-4 border-b-rose-900 bg-rose-900/5 shadow-lg">
                <p className="text-[10px] font-black text-rose-900 uppercase tracking-widest mb-1">SLA Crítico (1.5x)</p>
                <h4 className="text-4xl font-black text-rose-900">{stats.critical}</h4>
-               <p className="text-[9px] text-rose-800 font-bold mt-2">Atraso severo (>50%)</p>
+               <p className="text-[9px] text-rose-800 font-bold mt-2">Atraso severo (&gt;50%)</p>
             </div>
           </div>
 
