@@ -6,13 +6,14 @@ import SupervisorDashboard from './views/SupervisorDashboard';
 import WorkerDemands from './views/WorkerDemands';
 import AdminDashboards from './views/AdminDashboards';
 
-import { Ticket, User } from './types';
+import { Ticket, User, Priority, SLASettings } from './types';
 import { INITIAL_TICKETS, MOCK_USERS } from './constants';
+import { calculateSLA } from './utils';
 
 /* =======================
    Types
 ======================= */
-type Role = 'REQUESTER' | 'SUPERVISOR' | 'WORKER' | 'ADMIN';
+type Role = 'REQUESTER' | 'SUPERVISOR' | 'WORKER' | 'ADMIN' | 'DIRECTORATE';
 type View = 'new-demand' | 'supervisor' | 'worker' | 'admin';
 
 /* =======================
@@ -23,6 +24,7 @@ const roleToViewMap: Record<Role, View> = {
   SUPERVISOR: 'supervisor',
   WORKER: 'worker',
   ADMIN: 'admin',
+  DIRECTORATE: 'admin',
 };
 
 const App: React.FC = () => {
@@ -33,11 +35,17 @@ const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User>(MOCK_USERS[3]); // Admin (demo)
   const [currentView, setCurrentView] = useState<View>('admin');
   const [tickets, setTickets] = useState<Ticket[]>(INITIAL_TICKETS);
+  
+  const [slaSettings, setSlaSettings] = useState<SLASettings>({
+    [Priority.EMERGENCY]: 1,
+    [Priority.HIGH]: 4,
+    [Priority.MEDIUM]: 24,
+    [Priority.LOW]: 72,
+  });
 
   /* =======================
      Effects
   ======================= */
-  // Sync view whenever role changes
   useEffect(() => {
     setCurrentView(roleToViewMap[currentUser.role as Role]);
   }, [currentUser.role]);
@@ -52,7 +60,7 @@ const App: React.FC = () => {
 
   const handleAddTicket = (newTicket: Ticket) => {
     setTickets(prev => [newTicket, ...prev]);
-    setCurrentView('supervisor');
+    if (currentUser.role === 'REQUESTER') setCurrentView('new-demand');
   };
 
   const handleUpdateTicket = (id: string, updates: Partial<Ticket>) => {
@@ -70,8 +78,8 @@ const App: React.FC = () => {
   /* =======================
      Derived Data
   ======================= */
-  const workers = useMemo(
-    () => users.filter(user => user.role === 'WORKER'),
+  const assignableToSupervisor = useMemo(
+    () => users.filter(user => user.role === 'WORKER' || user.role === 'DIRECTORATE'),
     [users]
   );
 
@@ -85,6 +93,7 @@ const App: React.FC = () => {
           <NewDemand
             onSubmit={handleAddTicket}
             userName={currentUser.name}
+            slaSettings={slaSettings}
           />
         );
 
@@ -92,8 +101,9 @@ const App: React.FC = () => {
         return (
           <SupervisorDashboard
             tickets={tickets}
-            workers={workers}
+            workers={assignableToSupervisor}
             onUpdateTicket={handleUpdateTicket}
+            slaSettings={slaSettings}
           />
         );
 
@@ -111,7 +121,12 @@ const App: React.FC = () => {
           <AdminDashboards 
             tickets={tickets} 
             users={users} 
+            slaSettings={slaSettings}
             onAddUser={handleAddUser} 
+            onUpdateTicket={handleUpdateTicket}
+            onUpdateSLASettings={setSlaSettings}
+            userRole={currentUser.role}
+            userName={currentUser.name}
           />
         );
 
@@ -120,9 +135,6 @@ const App: React.FC = () => {
     }
   };
 
-  /* =======================
-     Render
-  ======================= */
   return (
     <Layout
       userName={currentUser.name}

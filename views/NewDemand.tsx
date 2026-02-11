@@ -1,14 +1,15 @@
 
 import React, { useState } from 'react';
-import { Category, Priority, Ticket, Status } from '../types';
+import { Category, Priority, Ticket, Status, SLASettings } from '../types';
 import { calculateSLA } from '../utils';
 
 interface NewDemandProps {
   onSubmit: (ticket: Ticket) => void;
   userName: string;
+  slaSettings: SLASettings;
 }
 
-const NewDemand: React.FC<NewDemandProps> = ({ onSubmit, userName }) => {
+const NewDemand: React.FC<NewDemandProps> = ({ onSubmit, userName, slaSettings }) => {
   const [form, setForm] = useState({
     title: '',
     category: Category.ELECTRICAL,
@@ -42,7 +43,7 @@ const NewDemand: React.FC<NewDemandProps> = ({ onSubmit, userName }) => {
       photoOpen: form.photo,
       requester: userName,
       createdAt: now,
-      slaLimit: calculateSLA(form.priority, now),
+      slaLimit: calculateSLA(form.priority, now, slaSettings),
       status: Status.OPEN,
       materials: [],
       history: [{ timestamp: now, action: 'Abertura do chamado', user: userName }]
@@ -62,13 +63,33 @@ const NewDemand: React.FC<NewDemandProps> = ({ onSubmit, userName }) => {
 
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="grid md:grid-cols-2 gap-8">
+              <div className="space-y-2 md:col-span-2">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Urgência do Problema</label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 p-1.5 bg-slate-100 rounded-3xl">
+                  {Object.values(Priority).map(p => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setForm(f => ({ ...f, priority: p }))}
+                      className={`py-3.5 rounded-[20px] text-[10px] font-black transition-all border-2 ${
+                        form.priority === p 
+                        ? 'bg-white border-blue-500 text-slate-900 shadow-sm translate-y-[-2px]' 
+                        : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600'
+                      }`}
+                    >
+                      {p === Priority.EMERGENCY ? '🚨 ' : ''}{p}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">O que aconteceu?</label>
                 <input
                   required
                   type="text"
                   placeholder="Ex: Lâmpada do hall piscando"
-                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all placeholder:text-slate-300 font-medium"
+                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 outline-none transition-all placeholder:text-slate-300 font-medium"
                   value={form.title}
                   onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                 />
@@ -85,36 +106,16 @@ const NewDemand: React.FC<NewDemandProps> = ({ onSubmit, userName }) => {
                 </select>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Onde?</label>
+              <div className="space-y-2 md:col-span-2">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Localização Exata</label>
                 <input
                   required
                   type="text"
-                  placeholder="Ex: Bloco B, 4º Andar"
+                  placeholder="Ex: Bloco B, 4º Andar, ao lado do elevador"
                   className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 outline-none font-medium"
                   value={form.location}
                   onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
                 />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Prioridade Sugerida</label>
-                <div className="flex p-1 bg-slate-100 rounded-2xl">
-                  {Object.values(Priority).map(p => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => setForm(f => ({ ...f, priority: p }))}
-                      className={`flex-1 py-3 rounded-xl text-xs font-bold transition-all ${
-                        form.priority === p 
-                        ? 'bg-white text-slate-900 shadow-sm' 
-                        : 'text-slate-500 hover:text-slate-700'
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
               </div>
             </div>
 
@@ -123,7 +124,7 @@ const NewDemand: React.FC<NewDemandProps> = ({ onSubmit, userName }) => {
               <textarea
                 required
                 rows={3}
-                placeholder="Conte-nos mais detalhes..."
+                placeholder="Conte-nos mais detalhes para ajudar no diagnóstico técnico..."
                 className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-blue-500 outline-none font-medium"
                 value={form.description}
                 onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
@@ -131,22 +132,22 @@ const NewDemand: React.FC<NewDemandProps> = ({ onSubmit, userName }) => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Evidência Visual</label>
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Evidência Visual (Obrigatório)</label>
               <div className="relative group">
-                <label className="flex flex-col items-center justify-center w-full h-56 border-2 border-dashed border-slate-200 rounded-[32px] cursor-pointer bg-slate-50/50 group-hover:bg-slate-50 transition-all overflow-hidden">
+                <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-slate-200 rounded-[32px] cursor-pointer bg-slate-50/50 group-hover:bg-slate-50 transition-all overflow-hidden">
                   {form.photo ? (
                     <img src={form.photo} className="h-full w-full object-cover" alt="preview" />
                   ) : (
                     <div className="text-center p-6">
                       <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-4 text-2xl group-hover:scale-110 transition-transform">📸</div>
                       <p className="text-sm font-bold text-slate-700">Clique para capturar ou anexar</p>
-                      <p className="text-xs text-slate-400 mt-1">Imagens ajudam no diagnóstico rápido</p>
+                      <p className="text-xs text-slate-400 mt-1 uppercase font-black tracking-widest">Foto do problema</p>
                     </div>
                   )}
                   <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
                 </label>
                 {form.photo && (
-                  <button onClick={() => setForm(f => ({...f, photo: null}))} className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-full shadow-lg">✕</button>
+                  <button onClick={() => setForm(f => ({...f, photo: null}))} className="absolute top-4 right-4 bg-red-500 text-white w-10 h-10 rounded-full shadow-lg flex items-center justify-center font-bold">✕</button>
                 )}
               </div>
             </div>

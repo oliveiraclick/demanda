@@ -21,6 +21,7 @@ export const StatusBadge: React.FC<{ status: Status }> = ({ status }) => {
 
 export const PriorityBadge: React.FC<{ priority: Priority }> = ({ priority }) => {
   const styles: Record<Priority, string> = {
+    [Priority.EMERGENCY]: 'bg-red-700 text-white shadow-red-200 animate-pulse',
     [Priority.HIGH]: 'bg-red-500 text-white shadow-red-200',
     [Priority.MEDIUM]: 'bg-amber-400 text-white shadow-amber-100',
     [Priority.LOW]: 'bg-emerald-400 text-white shadow-emerald-100',

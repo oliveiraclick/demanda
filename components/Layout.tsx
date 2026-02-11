@@ -14,8 +14,8 @@ const Layout: React.FC<LayoutProps> = ({ children, userRole, userName, currentVi
   const menuItems = [
     { id: 'new-demand', label: 'Nova', roles: ['REQUESTER', 'ADMIN'], icon: '➕' },
     { id: 'supervisor', label: 'Triagem', roles: ['SUPERVISOR', 'ADMIN'], icon: '🔍' },
-    { id: 'worker', label: 'Tarefas', roles: ['WORKER', 'ADMIN'], icon: '🛠️' },
-    { id: 'admin', label: 'Painel', roles: ['ADMIN'], icon: '📊' },
+    { id: 'worker', label: 'Tarefas', roles: ['WORKER', 'ADMIN', 'DIRECTORATE'], icon: '🛠️' },
+    { id: 'admin', label: 'Painel', roles: ['ADMIN', 'DIRECTORATE', 'SUPERVISOR'], icon: '📊' },
   ];
 
   const visibleItems = menuItems.filter(item => item.roles.includes(userRole));
@@ -27,10 +27,12 @@ const Layout: React.FC<LayoutProps> = ({ children, userRole, userName, currentVi
         <div className="p-8">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-lg shadow-blue-500/20">
-              S
+              G
             </div>
             <div>
-              <h1 className="text-xl font-extrabold tracking-tight">Service<span className="text-blue-400">Flow</span></h1>
+              <h1 className="text-lg font-extrabold tracking-tight leading-tight">
+                Gestão de <span className="text-blue-400">Demanda</span>
+              </h1>
               <p className="text-[10px] text-slate-400 uppercase tracking-[2px] font-bold">Condomínio Pro</p>
             </div>
           </div>
@@ -39,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({ children, userRole, userName, currentVi
             <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">Operador</p>
             <p className="text-sm font-semibold truncate">{userName}</p>
             <span className="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-md mt-2 inline-block">
-              {userRole}
+              {userRole === 'DIRECTORATE' ? 'DIRETORIA' : userRole}
             </span>
           </div>
         </div>
@@ -65,7 +67,7 @@ const Layout: React.FC<LayoutProps> = ({ children, userRole, userName, currentVi
           <div className="p-4 bg-slate-800/50 rounded-2xl border border-slate-700/50">
             <p className="text-[10px] text-slate-500 font-bold uppercase mb-3 px-2">Simular Perfil</p>
             <div className="grid grid-cols-2 gap-2">
-              {['REQUESTER', 'SUPERVISOR', 'WORKER', 'ADMIN'].map(role => (
+              {['REQUESTER', 'SUPERVISOR', 'WORKER', 'ADMIN', 'DIRECTORATE'].map(role => (
                 <button
                   key={role}
                   onClick={() => onRoleSwitch(role)}
@@ -75,7 +77,7 @@ const Layout: React.FC<LayoutProps> = ({ children, userRole, userName, currentVi
                     : 'border-slate-700 text-slate-500 hover:border-slate-500'
                   }`}
                 >
-                  {role}
+                  {role === 'DIRECTORATE' ? 'DIRETORIA' : role}
                 </button>
               ))}
             </div>
@@ -103,8 +105,8 @@ const Layout: React.FC<LayoutProps> = ({ children, userRole, userName, currentVi
       <main className="flex-1 overflow-auto relative">
         <header className="h-16 md:h-20 bg-white/80 backdrop-blur-md border-b sticky top-0 z-10 px-4 md:px-8 flex items-center justify-between">
           <div className="flex items-center gap-3 md:hidden">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white shadow-sm">S</div>
-            <h2 className="font-bold text-slate-800 text-sm">ServiceFlow</h2>
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white shadow-sm">G</div>
+            <h2 className="font-bold text-slate-800 text-sm">Gestão de Demanda</h2>
           </div>
           <h2 className="hidden md:block font-bold text-slate-800 text-lg capitalize">{currentView.replace('-', ' ')}</h2>
           <div className="flex items-center gap-3">

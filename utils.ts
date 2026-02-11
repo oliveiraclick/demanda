@@ -1,19 +1,10 @@
 
-import { Priority } from './types';
+import { Priority, SLASettings } from './types';
 
-export const calculateSLA = (priority: Priority, startDate: Date): Date => {
+export const calculateSLA = (priority: Priority, startDate: Date, slaSettings: SLASettings): Date => {
   const limit = new Date(startDate);
-  switch (priority) {
-    case Priority.HIGH:
-      limit.setHours(limit.getHours() + 4);
-      break;
-    case Priority.MEDIUM:
-      limit.setHours(limit.getHours() + 24);
-      break;
-    case Priority.LOW:
-      limit.setHours(limit.getHours() + 72);
-      break;
-  }
+  const hoursToAdd = slaSettings[priority] || 24;
+  limit.setHours(limit.getHours() + hoursToAdd);
   return limit;
 };
 

@@ -1,5 +1,6 @@
 
 export enum Priority {
+  EMERGENCY = 'EMERGÊNCIA',
   HIGH = 'ALTA',
   MEDIUM = 'MÉDIA',
   LOW = 'BAIXA'
@@ -12,6 +13,13 @@ export enum Status {
   AWAITING_MATERIAL = 'AGUARDANDO MATERIAL',
   BLOCKED = 'BLOQUEADO',
   FINALIZED = 'FINALIZADO'
+}
+
+export enum JustificationStatus {
+  NONE = 'Nenhuma',
+  PENDING = 'Pendente',
+  APPROVED = 'Aprovada',
+  REJECTED = 'Rejeitada'
 }
 
 export enum Category {
@@ -46,14 +54,22 @@ export interface Ticket {
   startedAt?: Date;
   finishedAt?: Date;
   slaLimit: Date;
+  originalSlaLimit?: Date;
+  proposedNewLimit?: Date; // Novo campo
+  isExtended?: boolean;
   status: Status;
   materials: string[];
   history: HistoryEntry[];
   technicalNote?: string;
+  delayJustification?: string;
+  justificationStatus?: JustificationStatus;
+  rejectionReason?: string; // Novo campo
 }
 
 export interface User {
   id: string;
   name: string;
-  role: 'ADMIN' | 'SUPERVISOR' | 'WORKER' | 'REQUESTER';
+  role: 'ADMIN' | 'SUPERVISOR' | 'WORKER' | 'REQUESTER' | 'DIRECTORATE';
 }
+
+export type SLASettings = Record<Priority, number>;

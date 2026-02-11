@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { User, Ticket, Priority, Status, Category } from './types';
+import { User, Ticket, Priority, Status, Category, JustificationStatus } from './types';
 
 export const MOCK_USERS: User[] = [
   { id: '1', name: 'João Silva', role: 'WORKER' },
@@ -11,6 +11,29 @@ export const MOCK_USERS: User[] = [
 
 export const INITIAL_TICKETS: Ticket[] = [
   {
+    id: 'CH-110',
+    title: 'Vazamento em barrilete principal',
+    category: Category.PLUMBING,
+    location: 'Casa de Máquinas - Torre A',
+    priority: Priority.HIGH,
+    description: 'Vazamento de grandes proporções detectado no barrilete. Necessário troca de válvula de retenção de 3 polegadas.',
+    photoOpen: 'https://images.unsplash.com/photo-1585704032915-c3400ca1f963?auto=format&fit=crop&q=80&w=800',
+    requester: 'Zelador Marcos',
+    assignedTo: 'João Silva',
+    createdAt: new Date(Date.now() - 3600000 * 48), // 2 dias atrás
+    originalSlaLimit: new Date(Date.now() - 3600000 * 44), // Prazo original era 4h após abertura
+    slaLimit: new Date(Date.now() - 3600000 * 24), // Prazo atual (vencido)
+    status: Status.IN_PROGRESS,
+    delayJustification: 'A peça necessária (válvula 3") não tem no estoque local. O fornecedor terceiro entregará apenas amanhã pela manhã.',
+    justificationStatus: JustificationStatus.PENDING,
+    materials: ['Válvula de Retenção 3"'],
+    history: [
+      { timestamp: new Date(Date.now() - 3600000 * 48), action: 'Abertura do Chamado', user: 'Zelador Marcos' },
+      { timestamp: new Date(Date.now() - 3600000 * 46), action: 'Encaminhado para João Silva', user: 'Maria Souza' },
+      { timestamp: new Date(Date.now() - 3600000 * 2), action: 'Enviou justificativa de atraso', user: 'João Silva', comment: 'Aguardando peça de fornecedor externo.' }
+    ]
+  },
+  {
     id: 'CH-102',
     title: 'Refletores da quadra de basquete queimados',
     category: Category.ELECTRICAL,
@@ -19,7 +42,7 @@ export const INITIAL_TICKETS: Ticket[] = [
     description: 'Três refletores do lado esquerdo da quadra de basquete não estão acendendo. Moradores reclamaram da escuridão durante os jogos noturnos.',
     photoOpen: 'https://images.unsplash.com/photo-1544919982-b61976f0ba43?auto=format&fit=crop&q=80&w=800',
     requester: 'Vigilante Noturno',
-    createdAt: new Date(Date.now() - 3600000 * 3), // 3 hours ago
+    createdAt: new Date(Date.now() - 3600000 * 3), 
     slaLimit: new Date(Date.now() + 3600000 * 1),
     status: Status.OPEN,
     materials: [],
@@ -33,10 +56,10 @@ export const INITIAL_TICKETS: Ticket[] = [
     category: Category.GARDENING,
     location: 'Praça das Palmeiras - Alameda 4',
     priority: Priority.MEDIUM,
-    description: 'A grama na área do playground infantil está muito alta, dificultando a circulação das crianças e gerando risco de insetos. Necessário roçagem urgente.',
+    description: 'A grama na área do playground infantil está muito alta, dificultando a circulação das crianças e gerando risco de insetos.',
     photoOpen: 'https://images.unsplash.com/photo-1596435308126-09689e47228a?auto=format&fit=crop&q=80&w=800',
     requester: 'Moradora Ana (Casa 42)',
-    createdAt: new Date(Date.now() - 3600000 * 24), // 24 hours ago
+    createdAt: new Date(Date.now() - 3600000 * 24),
     slaLimit: new Date(Date.now() + 3600000 * 48),
     status: Status.QUEUED,
     assignedTo: 'João Silva',

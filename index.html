@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ServiceFlow Premium | Gestão de Condomínios</title>
+    <title>Gestão de Demanda | Premium</title>
     <!-- Tailwind via Play CDN para desenvolvimento rápido -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -61,7 +61,7 @@
 
         /* Loading indicator */
         #root:empty::after {
-            content: "Carregando ServiceFlow...";
+            content: "Carregando Gestão de Demanda...";
             position: absolute;
             top: 50%;
             left: 50%;
@@ -83,9 +83,9 @@
 <script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@^19.2.4",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
     "recharts": "https://esm.sh/recharts@^3.7.0"
   }
 }
@@ -93,7 +93,6 @@
 </head>
 <body>
     <div id="root"></div>
-    <!-- O Vite transformará este arquivo TSX em JS durante o build -->
     <script type="module" src="./index.tsx"></script>
 </body>
 </html>
